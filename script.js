@@ -85,7 +85,7 @@ const scoreValue = document.getElementById('score-value');
 const meterStatus = document.getElementById('meter-status');
 const errorMsg = document.getElementById('error-message');
 
-const API_BASE_URL = 'https://mental-health-score-predictor-app-s92j.onrender.com';
+const API_BASE_URL = 'http://127.0.0.1:8000';
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -95,6 +95,7 @@ form.addEventListener('submit', async (e) => {
     gaugeFill.style.strokeDashoffset = 251.2;
     scoreValue.textContent = "--";
     meterStatus.textContent = "Processing Data...";
+    meterStatus.style.color = "var(--text-muted)";
     loader.classList.add('active');
 
     // Collect and typecast data according to Pydantic requirements
@@ -147,10 +148,10 @@ form.addEventListener('submit', async (e) => {
 });
 
 
-// --- 4. Meter Animation ---
+// --- 4. Meter Animation (Higher is Healthier: 0-10 Scale) ---
 function updateMeter(score) {
     const circumference = 251.2; 
-    const maxScore = 100;
+    const maxScore = 10;
     
     const safeScore = Math.min(Math.max(score, 0), maxScore);
     const fraction = safeScore / maxScore;
@@ -160,15 +161,19 @@ function updateMeter(score) {
     
     animateValue(scoreValue, 0, safeScore, 1500);
     
-    if (safeScore < 40) {
-        meterStatus.textContent = "Optimal Neural State";
-        meterStatus.style.color = "var(--col-green)";
-    } else if (safeScore < 75) {
-        meterStatus.textContent = "Elevated Cognitive Load";
-        meterStatus.style.color = "var(--col-yellow)";
-    } else {
+    // Updated ranges based on Higher = Healthier (Red -> Pink -> Yellow -> Green)
+    if (safeScore <= 3.5) {
         meterStatus.textContent = "Critical Stress Detected";
-        meterStatus.style.color = "var(--col-gold)";
+        meterStatus.style.color = "#FF4B4B"; // Muted Red
+    } else if (safeScore <= 6.0) {
+        meterStatus.textContent = "High Cognitive Load";
+        meterStatus.style.color = "#FF8E8B"; // Coral/Pink
+    } else if (safeScore <= 8.5) {
+        meterStatus.textContent = "Moderate Neural State";
+        meterStatus.style.color = "var(--col-gold)"; // Yellowish
+    } else {
+        meterStatus.textContent = "Optimal Neural State";
+        meterStatus.style.color = "var(--col-green)"; // Green
     }
 }
 

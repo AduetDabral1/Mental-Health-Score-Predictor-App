@@ -334,7 +334,6 @@ input:focus, select:focus {
 .meter-status {
     margin-top: 2rem;
     font-size: 1.1rem;
-    color: var(--col-light-green);
     text-align: center;
 }
 
