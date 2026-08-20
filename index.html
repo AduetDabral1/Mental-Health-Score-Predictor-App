@@ -3,397 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental Health Signal - AI Wellness Analysis</title>
+    <title>AI Mental Health Predictor</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="background">
-        <div class="animated-dots"></div>
-        <canvas id="particleCanvas"></canvas>
-    </div>
+    <!-- Background Elements -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-    <!-- Floating Orbs -->
-    <div class="orbs-container">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
-
-    <!-- ========================================
-         HERO SECTION
-         ======================================== -->
-    <section class="hero-section">
-        <div class="hero-container">
-            <!-- Hero Content -->
-            <div class="hero-content">
-                <div class="hero-label">AI-Powered Wellness Analysis</div>
-                <h1 class="hero-title">Mental Health <span class="highlight">Signal</span></h1>
-                <p class="hero-description">
-                    Understand your mental wellbeing through AI. Get personalized insights based on your daily habits, 
-                    stress levels, and lifestyle patterns. A quick read on how your wellness is trending — not a diagnosis.
-                </p>
-                <button class="hero-cta" onclick="scrollToForm()">
-                    Start Analysis
-                    <span class="arrow">→</span>
-                </button>
+    <!-- Hero Landing Page -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <!-- Abstract Humanoid Face / AI Core -->
+            <div class="ai-face-container">
+                <svg viewBox="0 0 200 200" class="ai-face">
+                    <defs>
+                        <linearGradient id="faceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FED24F" />
+                            <stop offset="50%" stop-color="#B2D959" />
+                            <stop offset="100%" stop-color="#7EC151" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <!-- Flowing Gradient Waves / Brain mapping -->
+                    <path d="M 50,100 Q 100,50 150,100 T 50,150" fill="none" stroke="url(#faceGrad)" stroke-width="2" class="wave wave1"/>
+                    <path d="M 40,120 Q 100,70 160,120 T 40,170" fill="none" stroke="url(#faceGrad)" stroke-width="1.5" class="wave wave2"/>
+                    <!-- Humanoid Structure -->
+                    <circle cx="100" cy="100" r="45" fill="none" stroke="url(#faceGrad)" stroke-width="3" filter="url(#glow)"/>
+                    <circle cx="80" cy="95" r="4" fill="#FFF449" filter="url(#glow)"/>
+                    <circle cx="120" cy="95" r="4" fill="#FFF449" filter="url(#glow)"/>
+                    <path d="M 90,115 Q 100,125 110,115" fill="none" stroke="#FFF449" stroke-width="2"/>
+                    <!-- Nodes -->
+                    <circle cx="100" cy="55" r="3" fill="#FED24F" />
+                    <circle cx="55" cy="100" r="3" fill="#7EC151" />
+                    <circle cx="145" cy="100" r="3" fill="#B2D959" />
+                </svg>
             </div>
-
-            <!-- Hero Visual -->
-            <div class="hero-visual">
-                <div class="visual-card">
-                    <div class="visual-inner">
-                        <div class="visual-face">
-                            <svg class="humanoid-hero-face" viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Head -->
-                                <ellipse cx="100" cy="80" rx="55" ry="65" class="head-fill" />
-                                
-                                <!-- Left Eye -->
-                                <circle cx="75" cy="60" r="12" class="eye-outer" />
-                                <circle cx="75" cy="60" r="8" class="eye-inner" />
-                                <circle cx="76" cy="58" r="4" class="eye-pupil" />
-                                
-                                <!-- Right Eye -->
-                                <circle cx="125" cy="60" r="12" class="eye-outer" />
-                                <circle cx="125" cy="60" r="8" class="eye-inner" />
-                                <circle cx="126" cy="58" r="4" class="eye-pupil" />
-                                
-                                <!-- Nose -->
-                                <path d="M 100 75 L 95 95 L 105 95" class="nose" />
-                                
-                                <!-- Mouth -->
-                                <path d="M 85 115 Q 100 125 115 115" class="mouth" />
-                                
-                                <!-- Aura Circle -->
-                                <circle cx="100" cy="100" r="80" class="aura" />
-                            </svg>
-                        </div>
-                        <div class="visual-waves">
-                            <svg class="wave-hero" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
-                                <path class="wave-path wave-h1" d="M 0,40 Q 50,10 100,40 T 200,40 T 300,40 T 400,40 L 400,80 L 0,80 Z" />
-                            </svg>
-                            <svg class="wave-hero" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
-                                <path class="wave-path wave-h2" d="M 0,50 Q 50,20 100,50 T 200,50 T 300,50 T 400,50 L 400,80 L 0,80 Z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+            <h1>Neural Health <span class="highlight">Analysis</span></h1>
+            <p>Harnessing advanced machine learning to analyze digital habits, physical activity, and stress variables. Scroll down to initiate your mental health diagnostic sequence.</p>
+            <div class="scroll-indicator">
+                <span>Begin Analysis</span>
+                <div class="arrow">↓</div>
             </div>
-        </div>
-
-        <!-- Scroll Indicator -->
-        <div class="scroll-indicator">
-            <div class="scroll-mouse">
-                <div class="scroll-wheel"></div>
-            </div>
-            <p>Scroll to explore</p>
         </div>
     </section>
 
-    <!-- ========================================
-         FORM SECTION
-         ======================================== -->
-    <section class="form-main-section" id="formSection">
-        <div class="form-container">
-            <!-- Form Column -->
-            <div class="form-column">
-                <div class="form-header">
-                    <div class="form-label">Student Wellness Analytics</div>
-                    <h2 class="form-title">Mental Health <span class="italic">Signal</span></h2>
-                    <p class="form-description">
-                        A quick read on how habits, screen time, and stress are trending — 
-                        modeled from your daily rhythm, not a diagnosis.
-                    </p>
-                </div>
-
-                <form id="predictionForm" class="prediction-form">
-                    <!-- Form Section 1: Profile -->
-                    <div class="form-section">
-                        <div class="section-number">01</div>
-                        <h3 class="section-title">Profile</h3>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="age">Age</label>
-                                <input type="number" id="age" name="age" min="10" max="100" placeholder="e.g. 21" required>
-                                <span class="field-hint">10-100</span>
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Gender</label>
-                                <select id="gender" name="gender" required>
-                                    <option value="">Select</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="country">Country</label>
-                                <input type="text" id="country" name="country" placeholder="e.g. India" list="countryList" required>
-                                <datalist id="countryList">
-                                    <option value="India">India</option>
-                                    <option value="USA">USA</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="Australia">Australia</option>
-                                    <option value="UK">UK</option>
-                                    <option value="Germany">Germany</option>
-                                    <option value="Mexico">Mexico</option>
-                                    <option value="Turkey">Turkey</option>
-                                    <option value="France">France</option>
-                                    <option value="Other">Other</option>
-                                </datalist>
-                            </div>
+    <!-- Prediction Section -->
+    <section class="prediction-section" id="prediction-section">
+        <div class="split-layout">
+            
+            <!-- Left: Form -->
+            <div class="form-wrapper glass-panel">
+                <h2>Diagnostic Input</h2>
+                <p class="subtitle">Enter data to compute mental health score.</p>
+                <form id="prediction-form">
+                    
+                    <div class="form-row">
+                        <div class="input-group">
+                            <input type="number" id="age" name="age" min="10" max="100" required placeholder=" ">
+                            <label>Age</label>
+                        </div>
+                        <div class="input-group">
+                            <select id="gender" name="gender" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <label class="select-label">Gender</label>
                         </div>
                     </div>
 
-                    <!-- Form Section 2: Academic & Digital Habits -->
-                    <div class="form-section">
-                        <div class="section-number">02</div>
-                        <h3 class="section-title">Academic & Digital Habits</h3>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="academic_level">Academic level</label>
-                                <select id="academic_level" name="academic_level" required>
-                                    <option value="">Select</option>
-                                    <option value="High School">High School</option>
-                                    <option value="Undergraduate">Undergraduate</option>
-                                    <option value="Graduate">Graduate</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="most_used_platform">Most-used platform</label>
-                                <select id="most_used_platform" name="most_used_platform" required>
-                                    <option value="">Select</option>
-                                    <option value="Facebook">Facebook</option>
-                                    <option value="Instagram">Instagram</option>
-                                    <option value="Twitter">Twitter</option>
-                                    <option value="LinkedIn">LinkedIn</option>
-                                    <option value="Tiktok">Tiktok</option>
-                                    <option value="Snapchat">Snapchat</option>
-                                    <option value="YouTube">YouTube</option>
-                                    <option value="LINE">LINE</option>
-                                    <option value="KakaoTalk">KakaoTalk</option>
-                                    <option value="VKontakte">VKontakte</option>
-                                    <option value="WhatsApp">WhatsApp</option>
-                                    <option value="WeChat">WeChat</option>
-                                </select>
-                            </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <input type="text" id="country" name="country" required placeholder=" ">
+                            <label>Country</label>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="purpose_of_use">Primary purpose</label>
-                                <select id="purpose_of_use" name="purpose_of_use" required>
-                                    <option value="">Select</option>
-                                    <option value="Networking">Networking</option>
-                                    <option value="Education">Education</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                    <option value="News">News</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="avg_daily_usage_hours">Avg. daily screen time</label>
-                                <div class="input-with-unit">
-                                    <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="24" step="0.5" placeholder="0.0" required>
-                                    <span class="unit">hrs</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="daily_unlocks">Daily phone unlocks</label>
-                                <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" placeholder="e.g. 60" required>
-                            </div>
+                        <div class="input-group">
+                            <select id="academic_level" name="academic_level" required>
+                                <option value="" disabled selected>Select Level</option>
+                                <option value="High School">High School</option>
+                                <option value="Undergraduate">Undergraduate</option>
+                                <option value="Graduate">Graduate</option>
+                            </select>
+                            <label class="select-label">Academic Level</label>
                         </div>
                     </div>
 
-                    <!-- Form Section 3: Lifestyle & Stress -->
-                    <div class="form-section">
-                        <div class="section-number">03</div>
-                        <h3 class="section-title">Lifestyle & Stress</h3>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="study_hours">Study hours / day</label>
-                                <div class="input-with-unit">
-                                    <input type="number" id="study_hours" name="study_hours" min="0" max="24" step="0.5" placeholder="0.0" required>
-                                    <span class="unit">hrs</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="physical_activity_hours">Physical activity / day</label>
-                                <div class="input-with-unit">
-                                    <input type="number" id="physical_activity_hours" name="physical_activity_hours" min="0" max="24" step="0.5" placeholder="0.0" required>
-                                    <span class="unit">hrs</span>
-                                </div>
-                            </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <select id="most_used_platform" name="most_used_platform" required>
+                                <option value="" disabled selected>Select Platform</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="LinkedIn">LinkedIn</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Snapchat">Snapchat</option>
+                                <option value="Twitter">Twitter</option>
+                                <option value="YouTube">YouTube</option>
+                                <option value="Tiktok">Tiktok</option>
+                                <option value="LINE">LINE</option>
+                                <option value="KakaoTalk">KakaoTalk</option>
+                                <option value="VKontakte">VKontakte</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="WeChat">WeChat</option>
+                            </select>
+                            <label class="select-label">Platform</label>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="sleep_hours_per_night">Sleep / night</label>
-                                <div class="input-with-unit">
-                                    <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="24" step="0.5" placeholder="0.0" required>
-                                    <span class="unit">hrs</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="stress_level">Stress level</label>
-                                <select id="stress_level" name="stress_level" required>
-                                    <option value="">Select</option>
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
-                                    <option value="Very High">Very High</option>
-                                </select>
-                            </div>
+                        <div class="input-group">
+                            <select id="purpose_of_use" name="purpose_of_use" required>
+                                <option value="" disabled selected>Select Purpose</option>
+                                <option value="Networking">Networking</option>
+                                <option value="Education">Education</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="News">News</option>
+                            </select>
+                            <label class="select-label">Purpose</label>
                         </div>
                     </div>
 
-                    <!-- Submit -->
-                    <button type="submit" class="submit-btn">
-                        Generate Prediction
-                    </button>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <input type="number" id="avg_daily_usage_hours" step="0.1" min="0" max="24" required placeholder=" ">
+                            <label>Daily Usage (Hrs)</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="daily_unlocks" min="0" required placeholder=" ">
+                            <label>Daily Unlocks</label>
+                        </div>
+                    </div>
 
-                    <!-- Error Message -->
-                    <div id="formError" class="form-error"></div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <input type="number" id="study_hours" step="0.1" min="0" max="24" required placeholder=" ">
+                            <label>Study Hours</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="physical_activity_hours" step="0.1" min="0" max="24" required placeholder=" ">
+                            <label>Physical Activity (Hrs)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <input type="number" id="sleep_hours_per_night" step="0.1" min="0" max="24" required placeholder=" ">
+                            <label>Sleep (Hrs/Night)</label>
+                        </div>
+                        <div class="input-group">
+                            <select id="stress_level" name="stress_level" required>
+                                <option value="" disabled selected>Select Level</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Very High">Very High</option>
+                            </select>
+                            <label class="select-label">Stress Level</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="glow-on-hover">Run Diagnostics</button>
+                    <div id="error-message" class="error-msg"></div>
                 </form>
             </div>
 
-            <!-- Meter Column -->
-            <div class="meter-column">
-                <div class="meter-card">
-                    <div class="meter-header">
-                        <h3 class="meter-title">Your score will appear here</h3>
-                        <p class="meter-subtitle">Fill in the form and submit to generate a predicted mental health score from 0-10.</p>
-                    </div>
-
-                    <div class="meter-visualization">
-                        <svg class="meter-gauge" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Background circle -->
-                            <circle cx="150" cy="150" r="140" fill="none" stroke="var(--text-secondary)" stroke-width="1" opacity="0.2"/>
-                            
-                            <!-- Gauge arc background -->
-                            <path d="M 50 150 A 100 100 0 0 1 250 150" fill="none" stroke="var(--text-secondary)" stroke-width="3" opacity="0.15"/>
-                            
-                            <!-- Gauge arc foreground (animated) -->
-                            <path id="gaugePath" d="M 50 150 A 100 100 0 0 1 50 150" fill="none" stroke="url(#gaugeGradient)" stroke-width="4" stroke-linecap="round"/>
-                            
-                            <!-- Gradient definition -->
-                            <defs>
-                                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#ff6b6b"/>
-                                    <stop offset="50%" stop-color="#7fb3a0"/>
-                                    <stop offset="100%" stop-color="#a8d5ba"/>
-                                </linearGradient>
-                            </defs>
-                            
-                            <!-- Center dot -->
-                            <circle cx="150" cy="150" r="12" fill="var(--accent-sage)" opacity="0.6"/>
-                            <circle cx="150" cy="150" r="8" fill="var(--text-primary)"/>
-                            
-                            <!-- Score text -->
-                            <text id="scoreText" x="150" y="155" font-size="48" font-weight="700" text-anchor="middle" fill="var(--text-primary)" opacity="0">0</text>
-                        </svg>
-
-                        <div class="meter-reading" id="meterReading">
-                            <div class="reading-spinner">
-                                <div class="spinner"></div>
-                            </div>
-                            <p class="reading-text">Running your habits through the model...</p>
-                        </div>
-                    </div>
-
-                    <div class="meter-legend">
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #ff6b6b, #ff8787)"></span>
-                            <span class="legend-label">Needs Attention</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #ff8787, #7fb3a0)"></span>
-                            <span class="legend-label">Fair</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #7fb3a0, #a8d5ba)"></span>
-                            <span class="legend-label">Good to Excellent</span>
-                        </div>
+            <!-- Right: Prediction Meter -->
+            <div class="meter-wrapper glass-panel">
+                <div class="meter-container">
+                    <svg class="gauge" viewBox="0 0 200 120">
+                        <defs>
+                            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#7EC151" />
+                                <stop offset="50%" stop-color="#B2D959" />
+                                <stop offset="80%" stop-color="#FFF449" />
+                                <stop offset="100%" stop-color="#FED24F" />
+                            </linearGradient>
+                            <filter id="gaugeGlow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Background track -->
+                        <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="15" stroke-linecap="round" />
+                        <!-- Active track (Meter) -->
+                        <path class="gauge-fill" id="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="15" stroke-linecap="round" stroke="url(#gaugeGradient)" filter="url(#gaugeGlow)" />
+                    </svg>
+                    
+                    <div class="meter-center">
+                        <div class="score-label">Score</div>
+                        <div class="score-value" id="score-value">--</div>
                     </div>
                 </div>
+                <div class="meter-status" id="meter-status">Awaiting Input...</div>
+                
+                <!-- Loading overlay -->
+                <div class="loader-overlay" id="loader">
+                    <div class="spinner"></div>
+                    <p>Processing Neural Data...</p>
+                </div>
             </div>
+
         </div>
     </section>
-
-    <!-- ========================================
-         MODALS
-         ======================================== -->
-    </div>
-
-    <!-- Loading Modal -->
-    <div id="loadingModal" class="modal hidden">
-        <div class="loading-container">
-            <div class="loading-spinner">
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-            </div>
-            <p class="loading-text">Analyzing Your Mental Health Profile...</p>
-        </div>
-    </div>
-
-    <!-- Result Modal -->
-    <div id="resultModal" class="modal hidden">
-        <div class="result-container">
-            <div class="result-card">
-                <div class="result-close" onclick="closeResult()">×</div>
-                
-                <div class="result-header">
-                    <div class="result-icon">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="45" class="result-circle" />
-                            <path d="M 30 50 L 45 65 L 70 35" class="result-checkmark" />
-                        </svg>
-                    </div>
-                    <h2>Analysis Complete</h2>
-                </div>
-
-                <div class="result-content">
-                    <div class="score-display">
-                        <div class="score-label">Mental Health Score</div>
-                        <div class="score-value" id="scoreValue">0.00</div>
-                        <div class="score-unit">/10</div>
-                    </div>
-
-                    <div class="score-bar">
-                        <div class="score-fill" id="scoreFill"></div>
-                    </div>
-
-                    <div class="score-interpretation" id="scoreInterpretation">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <div class="wellness-tips">
-                        <h3>Wellness Recommendations</h3>
-                        <ul id="tipslist">
-                            <!-- Populated by JS -->
-                        </ul>
-                    </div>
-                </div>
-
-                <button class="result-action-btn" onclick="resetForm()">Analyze Again</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Particles (Visual Enhancement) -->
-    <div class="floating-particles">
-        <div class="particle particle-1"></div>
-        <div class="particle particle-2"></div>
-        <div class="particle particle-3"></div>
-        <div class="particle particle-4"></div>
-        <div class="particle particle-5"></div>
-    </div>
 
     <script src="script.js"></script>
 </body>

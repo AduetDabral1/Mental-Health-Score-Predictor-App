@@ -1,563 +1,193 @@
-// ========================================
-// CONFIGURATION
-// ========================================
+// --- 1. Background Particle System (Glowing dots) ---
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function initCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', initCanvas);
+initCanvas();
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        // Using theme colors randomly
+        const colors = ['#FED24F', '#FFF449', '#B2D959', '#7EC151'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function createParticles() {
+    const particleCount = (window.innerWidth < 768) ? 40 : 100;
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        
+        // Draw connecting lines
+        for (let j = i; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 120) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(178, 217, 89, ${0.15 - distance/800})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(animateParticles);
+}
+
+createParticles();
+animateParticles();
+
+// --- 2. Scroll Interaction ---
+const scrollBtn = document.querySelector('.scroll-indicator');
+scrollBtn.addEventListener('click', () => {
+    document.getElementById('prediction-section').scrollIntoView({ behavior: 'smooth' });
+});
+
+
+// --- 3. API Integration & Form Handling ---
+const form = document.getElementById('prediction-form');
+const loader = document.getElementById('loader');
+const gaugeFill = document.getElementById('gauge-fill');
+const scoreValue = document.getElementById('score-value');
+const meterStatus = document.getElementById('meter-status');
+const errorMsg = document.getElementById('error-message');
 
 const API_BASE_URL = 'https://mental-health-score-predictor-app-s92j.onrender.com';
-const API_ENDPOINT = `${API_BASE_URL}/predict`;
-
-// Score interpretation ranges
-const SCORE_RANGES = {
-    excellent: { min: 8, max: 10, label: 'Excellent', color: '#7fb3a0' },
-    good: { min: 6, max: 7.99, label: 'Good', color: '#a8d5ba' },
-    fair: { min: 4, max: 5.99, label: 'Fair', color: '#ff8787' },
-    poor: { min: 0, max: 3.99, label: 'Needs Attention', color: '#ff6b6b' }
-};
-
-const WELLNESS_TIPS = {
-    sleep: [
-        'Try to maintain a consistent sleep schedule, going to bed and waking up at the same time daily.',
-        'Create a relaxing bedtime routine to help your mind wind down.',
-        'Aim for 7-9 hours of quality sleep each night for optimal health.'
-    ],
-    activity: [
-        'Increase physical activity gradually - even 30 minutes of walking daily helps.',
-        'Mix cardio with strength training for comprehensive fitness benefits.',
-        'Find activities you enjoy to make exercise a sustainable habit.'
-    ],
-    stress: [
-        'Practice mindfulness meditation for 10-15 minutes daily.',
-        'Take regular breaks from your devices and social media.',
-        'Connect with friends and family for emotional support.'
-    ],
-    study: [
-        'Use the Pomodoro technique: 25 minutes focused work, 5 minutes break.',
-        'Create a dedicated study space free from distractions.',
-        'Balance academic work with leisure time.'
-    ],
-    usage: [
-        'Set daily limits on social media and phone usage.',
-        'Use apps that monitor and remind you of screen time.',
-        'Replace some screen time with offline activities you enjoy.'
-    ]
-};
-
-// ========================================
-// DOM ELEMENTS
-// ========================================
-
-const form = document.getElementById('predictionForm');
-const loadingModal = document.getElementById('loadingModal');
-const resultModal = document.getElementById('resultModal');
-const formError = document.getElementById('formError');
-const canvas = document.getElementById('particleCanvas');
-const formSection = document.getElementById('formSection');
-
-// ========================================
-// PARTICLE ANIMATION
-// ========================================
-
-class ParticleSystem {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.particles = [];
-        this.animationId = null;
-        
-        this.resizeCanvas();
-        window.addEventListener('resize', () => this.resizeCanvas());
-        this.init();
-    }
-
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
-
-    init() {
-        this.particles = [];
-        for (let i = 0; i < 50; i++) {
-            this.particles.push({
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                radius: Math.random() * 2 + 0.5,
-                opacity: Math.random() * 0.5 + 0.3,
-                color: this.getRandomColor()
-            });
-        }
-        this.animate();
-    }
-
-    getRandomColor() {
-        const colors = ['#ff6b6b', '#ff8787', '#7fb3a0', '#a8d5ba', '#f5e6d3'];
-        return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    animate() {
-        this.ctx.fillStyle = 'rgba(10, 5, 20, 0.1)';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.particles.forEach(particle => {
-            particle.x += particle.vx;
-            particle.y += particle.vy;
-
-            if (particle.x < 0) particle.x = this.canvas.width;
-            if (particle.x > this.canvas.width) particle.x = 0;
-            if (particle.y < 0) particle.y = this.canvas.height;
-            if (particle.y > this.canvas.height) particle.y = 0;
-
-            this.ctx.fillStyle = particle.color;
-            this.ctx.globalAlpha = particle.opacity;
-            this.ctx.beginPath();
-            this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-        });
-
-        this.ctx.globalAlpha = 1;
-        this.animationId = requestAnimationFrame(() => this.animate());
-    }
-}
-
-// Initialize particle system
-const particleSystem = new ParticleSystem(canvas);
-
-// ========================================
-// SVG GRADIENTS
-// ========================================
-
-function addSVGGradients() {
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const faces = document.querySelectorAll('.humanoid-hero-face');
-    
-    faces.forEach(face => {
-        if (face.querySelector('defs')) return;
-
-        const defs = document.createElementNS(svgNS, 'defs');
-
-        // Head gradient
-        const headGradient = document.createElementNS(svgNS, 'radialGradient');
-        headGradient.setAttribute('id', 'headGradient');
-        headGradient.setAttribute('cx', '40%');
-        headGradient.setAttribute('cy', '40%');
-        
-        let stop1 = document.createElementNS(svgNS, 'stop');
-        stop1.setAttribute('offset', '0%');
-        stop1.setAttribute('stop-color', '#ff8787');
-        stop1.setAttribute('stop-opacity', '0.8');
-        
-        let stop2 = document.createElementNS(svgNS, 'stop');
-        stop2.setAttribute('offset', '100%');
-        stop2.setAttribute('stop-color', '#7fb3a0');
-        stop2.setAttribute('stop-opacity', '0.6');
-        
-        headGradient.appendChild(stop1);
-        headGradient.appendChild(stop2);
-        defs.appendChild(headGradient);
-
-        // Aura gradient
-        const auraGradient = document.createElementNS(svgNS, 'linearGradient');
-        auraGradient.setAttribute('id', 'auraGradient');
-        auraGradient.setAttribute('x1', '0%');
-        auraGradient.setAttribute('y1', '0%');
-        auraGradient.setAttribute('x2', '100%');
-        auraGradient.setAttribute('y2', '100%');
-        
-        let auraStop1 = document.createElementNS(svgNS, 'stop');
-        auraStop1.setAttribute('offset', '0%');
-        auraStop1.setAttribute('stop-color', '#ff6b6b');
-        
-        let auraStop2 = document.createElementNS(svgNS, 'stop');
-        auraStop2.setAttribute('offset', '50%');
-        auraStop2.setAttribute('stop-color', '#7fb3a0');
-        
-        let auraStop3 = document.createElementNS(svgNS, 'stop');
-        auraStop3.setAttribute('offset', '100%');
-        auraStop3.setAttribute('stop-color', '#f5e6d3');
-        
-        auraGradient.appendChild(auraStop1);
-        auraGradient.appendChild(auraStop2);
-        auraGradient.appendChild(auraStop3);
-        defs.appendChild(auraGradient);
-
-        face.insertBefore(defs, face.firstChild);
-    });
-}
-
-// ========================================
-// SCROLL ANIMATIONS
-// ========================================
-
-function scrollToForm() {
-    formSection.scrollIntoView({ behavior: 'smooth' });
-}
-
-// Scroll reveal for form elements
-function setupScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.form-section').forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(20px)';
-        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(section);
-    });
-}
-
-// ========================================
-// FORM HANDLING
-// ========================================
-
-function getFormData() {
-    const formData = new FormData(form);
-    const data = {
-        age: parseInt(formData.get('age')),
-        gender: formData.get('gender'),
-        country: formData.get('country'),
-        academic_level: formData.get('academic_level'),
-        most_used_platform: formData.get('most_used_platform'),
-        purpose_of_use: formData.get('purpose_of_use'),
-        avg_daily_usage_hours: parseFloat(formData.get('avg_daily_usage_hours')),
-        daily_unlocks: parseInt(formData.get('daily_unlocks')),
-        study_hours: parseFloat(formData.get('study_hours')),
-        physical_activity_hours: parseFloat(formData.get('physical_activity_hours')),
-        sleep_hours_per_night: parseFloat(formData.get('sleep_hours_per_night')),
-        stress_level: formData.get('stress_level')
-    };
-    return data;
-}
-
-function validateForm() {
-    const errors = {};
-    const formInputs = form.querySelectorAll('input, select');
-    let isValid = true;
-
-    formInputs.forEach(input => {
-        if (!input.value) {
-            isValid = false;
-        }
-    });
-
-    return isValid;
-}
-
-function showError(message) {
-    formError.textContent = message;
-    formError.classList.add('show');
-    setTimeout(() => {
-        formError.classList.remove('show');
-    }, 5000);
-}
-
-// ========================================
-// API COMMUNICATION
-// ========================================
-
-async function sendPredictionRequest(data) {
-    try {
-        const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || `API error: ${response.status}`);
-        }
-
-        const result = await response.json();
-        return result.predicted_mental_health_score;
-    } catch (error) {
-        console.error('API Error:', error);
-        throw error;
-    }
-}
-
-// ========================================
-// RESULT INTERPRETATION
-// ========================================
-
-function getScoreInterpretation(score) {
-    let range;
-    if (score >= SCORE_RANGES.excellent.min) {
-        range = SCORE_RANGES.excellent;
-    } else if (score >= SCORE_RANGES.good.min) {
-        range = SCORE_RANGES.good;
-    } else if (score >= SCORE_RANGES.fair.min) {
-        range = SCORE_RANGES.fair;
-    } else {
-        range = SCORE_RANGES.poor;
-    }
-
-    const interpretations = {
-        excellent: "Your mental health profile shows excellent well-being. You're managing your lifestyle factors exceptionally well. Keep up the great habits!",
-        good: "Your mental health is in good shape. There's room for minor improvements in some areas, but overall you're doing well.",
-        fair: "Your mental health shows some areas that could use attention. Consider making adjustments to your daily routines.",
-        poor: "Your mental health requires attention. Focus on making gradual improvements to your sleep, stress management, and daily activities."
-    };
-
-    return {
-        score: range,
-        interpretation: interpretations[range.label.toLowerCase()]
-    };
-}
-
-function generateWellnessTips(score, formData) {
-    const tips = [];
-
-    // Sleep recommendation
-    if (formData.sleep_hours_per_night < 7) {
-        tips.push(...WELLNESS_TIPS.sleep);
-    }
-
-    // Activity recommendation
-    if (formData.physical_activity_hours < 1) {
-        tips.push(...WELLNESS_TIPS.activity);
-    }
-
-    // Stress recommendation
-    if (formData.stress_level === 'High' || formData.stress_level === 'Very High') {
-        tips.push(...WELLNESS_TIPS.stress);
-    }
-
-    // Study recommendation
-    if (formData.study_hours < 1) {
-        tips.push(...WELLNESS_TIPS.study);
-    }
-
-    // Usage recommendation
-    if (formData.avg_daily_usage_hours > 6) {
-        tips.push(...WELLNESS_TIPS.usage);
-    }
-
-    // Return unique tips (max 5)
-    return [...new Set(tips)].slice(0, 5);
-}
-
-// ========================================
-// METER VISUALIZATION
-// ========================================
-
-function animateMeterGauge(score) {
-    const gaugePath = document.getElementById('gaugePath');
-    const scoreText = document.getElementById('scoreText');
-    const meterReading = document.querySelector('.meter-reading');
-    
-    if (!gaugePath) return;
-
-    // Hide reading, show score
-    if (meterReading) {
-        meterReading.classList.add('hidden');
-    }
-    
-    // Show score text with animation
-    scoreText.style.opacity = '0';
-    scoreText.textContent = score.toFixed(1);
-    
-    // Animate score text fade in
-    setTimeout(() => {
-        scoreText.style.transition = 'opacity 0.6s ease';
-        scoreText.style.opacity = '1';
-    }, 100);
-
-    // Calculate arc path (0-10 scale, so percentage = score / 10 * 100)
-    const percentage = Math.min(score / 10, 1);
-    const angle = percentage * Math.PI; // 180 degrees max
-    
-    // Arc path calculation
-    const radius = 100;
-    const startX = 50;
-    const startY = 150;
-    const endX = 50 + radius * Math.cos(Math.PI + angle);
-    const endY = 150 + radius * Math.sin(Math.PI + angle);
-    
-    const largeArcFlag = angle > Math.PI / 2 ? 1 : 0;
-    const pathData = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
-    
-    // Animate path with transition
-    gaugePath.style.transition = 'none';
-    gaugePath.setAttribute('d', pathData);
-    
-    // Trigger animation
-    setTimeout(() => {
-        gaugePath.style.transition = 'stroke-dashoffset 1s ease-out';
-    }, 50);
-}
-
-function updateMeterColor(score) {
-    const gaugePath = document.getElementById('gaugePath');
-    if (!gaugePath) return;
-
-    let gradient;
-    if (score >= 8) {
-        gradient = 'linear-gradient(90deg, #7fb3a0, #a8d5ba)'; // Green
-    } else if (score >= 6) {
-        gradient = 'linear-gradient(90deg, #a8d5ba, #ff8787)'; // Light sage to pink
-    } else if (score >= 4) {
-        gradient = 'linear-gradient(90deg, #ff8787, #ff6b6b)'; // Pink to coral
-    } else {
-        gradient = 'linear-gradient(90deg, #ff6b6b, #ff6b6b)'; // Red
-    }
-    
-    gaugePath.style.stroke = `url(#gaugeGradient)`;
-}
-
-// ========================================
-// UI UPDATES
-// ========================================
-
-function showLoadingModal() {
-    loadingModal.classList.remove('hidden');
-    document.body.classList.add('no-scroll');
-}
-
-function hideLoadingModal() {
-    loadingModal.classList.add('hidden');
-    document.body.classList.remove('no-scroll');
-}
-
-function displayResult(score, formData) {
-    const interpretation = getScoreInterpretation(score);
-    const tips = generateWellnessTips(score, formData);
-    
-    // Update meter visualization
-    animateMeterGauge(score);
-    updateMeterColor(score);
-    
-    // Update score display in modal
-    const scoreValue = document.getElementById('scoreValue');
-    const scoreFill = document.getElementById('scoreFill');
-    const scoreInterpretation = document.getElementById('scoreInterpretation');
-    const tipsList = document.getElementById('tipslist');
-
-    scoreValue.textContent = score.toFixed(1);
-    
-    // Normalize score to 10 for percentage
-    const percentage = (score / 10) * 100;
-    scoreFill.style.setProperty('--score-percentage', `${Math.min(percentage, 100)}%`);
-
-    // Set interpretation
-    scoreInterpretation.innerHTML = `
-        <p><strong style="color: ${interpretation.score.color};">${interpretation.score.label}</strong></p>
-        <p>${interpretation.interpretation}</p>
-    `;
-
-    // Set tips
-    tipsList.innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
-
-    // Show modal
-    resultModal.classList.remove('hidden');
-    document.body.classList.add('no-scroll');
-}
-
-// ========================================
-// EVENT HANDLERS
-// ========================================
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Reset UI
+    errorMsg.textContent = "";
+    gaugeFill.style.strokeDashoffset = 251.2;
+    scoreValue.textContent = "--";
+    meterStatus.textContent = "Processing Data...";
+    loader.classList.add('active');
 
-    // Clear previous errors
-    formError.classList.remove('show');
-
-    // Validate form
-    if (!validateForm()) {
-        showError('Please fill in all required fields.');
-        return;
-    }
+    // Collect and typecast data according to Pydantic requirements
+    const payload = {
+        age: parseInt(document.getElementById('age').value),
+        gender: document.getElementById('gender').value,
+        country: document.getElementById('country').value,
+        academic_level: document.getElementById('academic_level').value,
+        most_used_platform: document.getElementById('most_used_platform').value,
+        purpose_of_use: document.getElementById('purpose_of_use').value,
+        avg_daily_usage_hours: parseFloat(document.getElementById('avg_daily_usage_hours').value),
+        daily_unlocks: parseInt(document.getElementById('daily_unlocks').value),
+        study_hours: parseFloat(document.getElementById('study_hours').value),
+        physical_activity_hours: parseFloat(document.getElementById('physical_activity_hours').value),
+        sleep_hours_per_night: parseFloat(document.getElementById('sleep_hours_per_night').value),
+        stress_level: document.getElementById('stress_level').value
+    };
 
     try {
-        const formData = getFormData();
-        
-        // Show loading modal
-        showLoadingModal();
-
-        // Send request
-        const score = await sendPredictionRequest(formData);
-
-        // Hide loading modal
-        hideLoadingModal();
-
-        // Display result
-        displayResult(score, formData);
-    } catch (error) {
-        hideLoadingModal();
-        console.error('Error:', error);
-        showError(`Error: ${error.message || 'Failed to analyze mental health profile. Please try again.'}`);
-    }
-});
-
-// Close result modal
-window.closeResult = function() {
-    resultModal.classList.add('hidden');
-    document.body.classList.remove('no-scroll');
-};
-
-// Reset form
-window.resetForm = function() {
-    form.reset();
-    closeResult();
-};
-
-// ========================================
-// INITIALIZATION
-// ========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    addSVGGradients();
-    setupScrollAnimations();
-    
-    // Add smooth input animations
-    const inputs = form.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        input.addEventListener('blur', () => {
-            if (input.value) {
-                input.parentElement.classList.add('filled');
-            } else {
-                input.parentElement.classList.remove('filled');
-            }
+        const response = await fetch(`${API_BASE_URL}/predict`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
         });
-    });
-});
 
-// ========================================
-// ACCESSIBILITY IMPROVEMENTS
-// ========================================
+        const data = await response.json();
 
-// Handle Escape key to close modals
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (!loadingModal.classList.contains('hidden')) {
-            hideLoadingModal();
+        if (!response.ok) {
+            if (data.detail) {
+                console.error("Validation Error:", data.detail);
+                throw new Error("Validation Error: Please check your inputs.");
+            }
+            throw new Error(data.message || "Server Error Occurred");
         }
-        if (!resultModal.classList.contains('hidden')) {
-            closeResult();
+
+        updateMeter(data.predicted_mental_health_score);
+
+    } catch (error) {
+        console.error('API Error:', error);
+        errorMsg.textContent = error.message === "Failed to fetch" 
+            ? "Cannot connect to server. Ensure FastAPI is running on http://127.0.0.1:8000" 
+            : error.message;
+        meterStatus.textContent = "Analysis Failed.";
+    } finally {
+        loader.classList.remove('active');
+    }
+});
+
+
+// --- 4. Meter Animation ---
+function updateMeter(score) {
+    const circumference = 251.2; 
+    const maxScore = 100;
+    
+    const safeScore = Math.min(Math.max(score, 0), maxScore);
+    const fraction = safeScore / maxScore;
+    const offset = circumference - (fraction * circumference);
+    
+    gaugeFill.style.strokeDashoffset = offset;
+    
+    animateValue(scoreValue, 0, safeScore, 1500);
+    
+    if (safeScore < 40) {
+        meterStatus.textContent = "Optimal Neural State";
+        meterStatus.style.color = "var(--col-green)";
+    } else if (safeScore < 75) {
+        meterStatus.textContent = "Elevated Cognitive Load";
+        meterStatus.style.color = "var(--col-yellow)";
+    } else {
+        meterStatus.textContent = "Critical Stress Detected";
+        meterStatus.style.color = "var(--col-gold)";
+    }
+}
+
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const currentVal = (progress * (end - start) + start).toFixed(2);
+        
+        obj.innerHTML = currentVal;
+        
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            obj.innerHTML = end.toFixed(2);
         }
-    }
-});
-
-// Click outside modal to close
-resultModal.addEventListener('click', (e) => {
-    if (e.target === resultModal) {
-        closeResult();
-    }
-});
-
-// Scroll to form on mobile after hero
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const heroSection = document.querySelector('.hero-section');
-    if (heroSection && scrollY > window.innerHeight * 0.8) {
-        // User is already scrolling to form
-    }
-});
+    };
+    window.requestAnimationFrame(step);
+}
