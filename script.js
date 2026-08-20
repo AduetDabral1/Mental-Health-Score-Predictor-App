@@ -169,7 +169,7 @@ function updateMeter(score) {
         meterStatus.textContent = "High Cognitive Load";
         meterStatus.style.color = "#FF8E8B"; // Coral/Pink
     } else if (safeScore <= 8.5) {
-        meterStatus.textContent = "Moderate Neural State";
+        meterStatus.textContent = "Strong Neural State";
         meterStatus.style.color = "var(--col-gold)"; // Yellowish
     } else {
         meterStatus.textContent = "Optimal Neural State";
