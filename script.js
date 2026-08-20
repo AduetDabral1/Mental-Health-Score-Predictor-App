@@ -7,10 +7,10 @@ const API_ENDPOINT = `${API_BASE_URL}/predict`;
 
 // Score interpretation ranges
 const SCORE_RANGES = {
-    excellent: { min: 80, max: 100, label: 'Excellent', color: '#7fb3a0' },
-    good: { min: 60, max: 79, label: 'Good', color: '#a8d5ba' },
-    fair: { min: 40, max: 59, label: 'Fair', color: '#ff8787' },
-    poor: { min: 0, max: 39, label: 'Needs Attention', color: '#ff6b6b' }
+    excellent: { min: 8, max: 10, label: 'Excellent', color: '#7fb3a0' },
+    good: { min: 6, max: 7.99, label: 'Good', color: '#a8d5ba' },
+    fair: { min: 4, max: 5.99, label: 'Fair', color: '#ff8787' },
+    poor: { min: 0, max: 3.99, label: 'Needs Attention', color: '#ff6b6b' }
 };
 
 const WELLNESS_TIPS = {
@@ -50,6 +50,7 @@ const loadingModal = document.getElementById('loadingModal');
 const resultModal = document.getElementById('resultModal');
 const formError = document.getElementById('formError');
 const canvas = document.getElementById('particleCanvas');
+const formSection = document.getElementById('formSection');
 
 // ========================================
 // PARTICLE ANIMATION
@@ -127,59 +128,87 @@ const particleSystem = new ParticleSystem(canvas);
 
 function addSVGGradients() {
     const svgNS = 'http://www.w3.org/2000/svg';
-    const face = document.querySelector('.humanoid-face');
+    const faces = document.querySelectorAll('.humanoid-hero-face');
     
-    // Check if defs already exists
-    if (face.querySelector('defs')) return;
+    faces.forEach(face => {
+        if (face.querySelector('defs')) return;
 
-    const defs = document.createElementNS(svgNS, 'defs');
+        const defs = document.createElementNS(svgNS, 'defs');
 
-    // Head gradient
-    const headGradient = document.createElementNS(svgNS, 'radialGradient');
-    headGradient.setAttribute('id', 'headGradient');
-    headGradient.setAttribute('cx', '40%');
-    headGradient.setAttribute('cy', '40%');
-    
-    let stop1 = document.createElementNS(svgNS, 'stop');
-    stop1.setAttribute('offset', '0%');
-    stop1.setAttribute('stop-color', '#ff8787');
-    stop1.setAttribute('stop-opacity', '0.8');
-    
-    let stop2 = document.createElementNS(svgNS, 'stop');
-    stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', '#7fb3a0');
-    stop2.setAttribute('stop-opacity', '0.6');
-    
-    headGradient.appendChild(stop1);
-    headGradient.appendChild(stop2);
-    defs.appendChild(headGradient);
+        // Head gradient
+        const headGradient = document.createElementNS(svgNS, 'radialGradient');
+        headGradient.setAttribute('id', 'headGradient');
+        headGradient.setAttribute('cx', '40%');
+        headGradient.setAttribute('cy', '40%');
+        
+        let stop1 = document.createElementNS(svgNS, 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', '#ff8787');
+        stop1.setAttribute('stop-opacity', '0.8');
+        
+        let stop2 = document.createElementNS(svgNS, 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('stop-color', '#7fb3a0');
+        stop2.setAttribute('stop-opacity', '0.6');
+        
+        headGradient.appendChild(stop1);
+        headGradient.appendChild(stop2);
+        defs.appendChild(headGradient);
 
-    // Aura gradient
-    const auraGradient = document.createElementNS(svgNS, 'linearGradient');
-    auraGradient.setAttribute('id', 'auraGradient');
-    auraGradient.setAttribute('x1', '0%');
-    auraGradient.setAttribute('y1', '0%');
-    auraGradient.setAttribute('x2', '100%');
-    auraGradient.setAttribute('y2', '100%');
-    
-    let auraStop1 = document.createElementNS(svgNS, 'stop');
-    auraStop1.setAttribute('offset', '0%');
-    auraStop1.setAttribute('stop-color', '#ff6b6b');
-    
-    let auraStop2 = document.createElementNS(svgNS, 'stop');
-    auraStop2.setAttribute('offset', '50%');
-    auraStop2.setAttribute('stop-color', '#7fb3a0');
-    
-    let auraStop3 = document.createElementNS(svgNS, 'stop');
-    auraStop3.setAttribute('offset', '100%');
-    auraStop3.setAttribute('stop-color', '#f5e6d3');
-    
-    auraGradient.appendChild(auraStop1);
-    auraGradient.appendChild(auraStop2);
-    auraGradient.appendChild(auraStop3);
-    defs.appendChild(auraGradient);
+        // Aura gradient
+        const auraGradient = document.createElementNS(svgNS, 'linearGradient');
+        auraGradient.setAttribute('id', 'auraGradient');
+        auraGradient.setAttribute('x1', '0%');
+        auraGradient.setAttribute('y1', '0%');
+        auraGradient.setAttribute('x2', '100%');
+        auraGradient.setAttribute('y2', '100%');
+        
+        let auraStop1 = document.createElementNS(svgNS, 'stop');
+        auraStop1.setAttribute('offset', '0%');
+        auraStop1.setAttribute('stop-color', '#ff6b6b');
+        
+        let auraStop2 = document.createElementNS(svgNS, 'stop');
+        auraStop2.setAttribute('offset', '50%');
+        auraStop2.setAttribute('stop-color', '#7fb3a0');
+        
+        let auraStop3 = document.createElementNS(svgNS, 'stop');
+        auraStop3.setAttribute('offset', '100%');
+        auraStop3.setAttribute('stop-color', '#f5e6d3');
+        
+        auraGradient.appendChild(auraStop1);
+        auraGradient.appendChild(auraStop2);
+        auraGradient.appendChild(auraStop3);
+        defs.appendChild(auraGradient);
 
-    face.insertBefore(defs, face.firstChild);
+        face.insertBefore(defs, face.firstChild);
+    });
+}
+
+// ========================================
+// SCROLL ANIMATIONS
+// ========================================
+
+function scrollToForm() {
+    formSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Scroll reveal for form elements
+function setupScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(section);
+    });
 }
 
 // ========================================
@@ -211,14 +240,8 @@ function validateForm() {
     let isValid = true;
 
     formInputs.forEach(input => {
-        const errorSpan = input.parentElement.querySelector('.error-text');
-        
         if (!input.value) {
-            errors[input.name] = 'This field is required';
-            if (errorSpan) errorSpan.textContent = 'This field is required';
             isValid = false;
-        } else {
-            if (errorSpan) errorSpan.textContent = '';
         }
     });
 
@@ -322,6 +345,74 @@ function generateWellnessTips(score, formData) {
 }
 
 // ========================================
+// METER VISUALIZATION
+// ========================================
+
+function animateMeterGauge(score) {
+    const gaugePath = document.getElementById('gaugePath');
+    const scoreText = document.getElementById('scoreText');
+    const meterReading = document.querySelector('.meter-reading');
+    
+    if (!gaugePath) return;
+
+    // Hide reading, show score
+    if (meterReading) {
+        meterReading.classList.add('hidden');
+    }
+    
+    // Show score text with animation
+    scoreText.style.opacity = '0';
+    scoreText.textContent = score.toFixed(1);
+    
+    // Animate score text fade in
+    setTimeout(() => {
+        scoreText.style.transition = 'opacity 0.6s ease';
+        scoreText.style.opacity = '1';
+    }, 100);
+
+    // Calculate arc path (0-10 scale, so percentage = score / 10 * 100)
+    const percentage = Math.min(score / 10, 1);
+    const angle = percentage * Math.PI; // 180 degrees max
+    
+    // Arc path calculation
+    const radius = 100;
+    const startX = 50;
+    const startY = 150;
+    const endX = 50 + radius * Math.cos(Math.PI + angle);
+    const endY = 150 + radius * Math.sin(Math.PI + angle);
+    
+    const largeArcFlag = angle > Math.PI / 2 ? 1 : 0;
+    const pathData = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+    
+    // Animate path with transition
+    gaugePath.style.transition = 'none';
+    gaugePath.setAttribute('d', pathData);
+    
+    // Trigger animation
+    setTimeout(() => {
+        gaugePath.style.transition = 'stroke-dashoffset 1s ease-out';
+    }, 50);
+}
+
+function updateMeterColor(score) {
+    const gaugePath = document.getElementById('gaugePath');
+    if (!gaugePath) return;
+
+    let gradient;
+    if (score >= 8) {
+        gradient = 'linear-gradient(90deg, #7fb3a0, #a8d5ba)'; // Green
+    } else if (score >= 6) {
+        gradient = 'linear-gradient(90deg, #a8d5ba, #ff8787)'; // Light sage to pink
+    } else if (score >= 4) {
+        gradient = 'linear-gradient(90deg, #ff8787, #ff6b6b)'; // Pink to coral
+    } else {
+        gradient = 'linear-gradient(90deg, #ff6b6b, #ff6b6b)'; // Red
+    }
+    
+    gaugePath.style.stroke = `url(#gaugeGradient)`;
+}
+
+// ========================================
 // UI UPDATES
 // ========================================
 
@@ -339,16 +430,20 @@ function displayResult(score, formData) {
     const interpretation = getScoreInterpretation(score);
     const tips = generateWellnessTips(score, formData);
     
-    // Update score display
+    // Update meter visualization
+    animateMeterGauge(score);
+    updateMeterColor(score);
+    
+    // Update score display in modal
     const scoreValue = document.getElementById('scoreValue');
     const scoreFill = document.getElementById('scoreFill');
     const scoreInterpretation = document.getElementById('scoreInterpretation');
     const tipsList = document.getElementById('tipslist');
 
-    scoreValue.textContent = score.toFixed(2);
+    scoreValue.textContent = score.toFixed(1);
     
-    // Normalize score to 100 for percentage
-    const percentage = (score / 100) * 100;
+    // Normalize score to 10 for percentage
+    const percentage = (score / 10) * 100;
     scoreFill.style.setProperty('--score-percentage', `${Math.min(percentage, 100)}%`);
 
     // Set interpretation
@@ -420,6 +515,7 @@ window.resetForm = function() {
 
 document.addEventListener('DOMContentLoaded', () => {
     addSVGGradients();
+    setupScrollAnimations();
     
     // Add smooth input animations
     const inputs = form.querySelectorAll('input, select');
@@ -454,5 +550,14 @@ document.addEventListener('keydown', (e) => {
 resultModal.addEventListener('click', (e) => {
     if (e.target === resultModal) {
         closeResult();
+    }
+});
+
+// Scroll to form on mobile after hero
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection && scrollY > window.innerHeight * 0.8) {
+        // User is already scrolling to form
     }
 });
