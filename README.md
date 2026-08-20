@@ -59,8 +59,7 @@ No frontend framework is required.
 ## 4. Architecture
 
 The application is built as a simple end-to-end inference pipeline:
-
-<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/2dc369c1-95c4-4927-ba3a-b75d6fb8c56b" />
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/2dc369c1-95c4-4927-ba3a-b75d6fb8c56b" style="width: 50%; height: auto/>
 
 
 The key architectural decision is that the **preprocessing and trained model are stored together**. This allows the backend to pass raw validated input directly to the saved pipeline instead of manually reproducing the transformations used during training.
