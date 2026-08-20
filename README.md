@@ -1,6 +1,10 @@
 # ML-Powered Student Mental Health Score Predictor
 
 ## 1. Project Overview
+Live Link - https://mental-health-score-predictor-app-1.onrender.com/
+**
+The service spins down when idle - the first request after inactivity can take 30–50s to wake. Explain this so a live demo doesn't look broken.
+**
 
 This project predicts a student's **Mental Health Score** as a continuous value using information about social media usage, study habits, sleep, physical activity, stress, demographics, and academic background. It is a regression problem built on a dataset of **5,000 students and 13 columns**.
 
