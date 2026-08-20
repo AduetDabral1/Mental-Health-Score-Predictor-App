@@ -85,7 +85,7 @@ const scoreValue = document.getElementById('score-value');
 const meterStatus = document.getElementById('meter-status');
 const errorMsg = document.getElementById('error-message');
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = 'https://mental-health-score-predictor-app-s92j.onrender.com';
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -139,7 +139,7 @@ form.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('API Error:', error);
         errorMsg.textContent = error.message === "Failed to fetch" 
-            ? "Cannot connect to server. Ensure FastAPI is running on http://127.0.0.1:8000" 
+            ? "Cannot connect to server." 
             : error.message;
         meterStatus.textContent = "Analysis Failed.";
     } finally {
