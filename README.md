@@ -1,291 +1,319 @@
-# 🧠 Mental Health Predictor - AI-Powered Web Application
+# ML-Powered Student Mental Health Score Predictor
 
-A modern, futuristic web application for mental health prediction powered by machine learning. Features animated 3D visuals, smooth interactions, and beautiful UI design.
+## 1. Project Overview
 
-## 📋 Project Structure
+This project predicts a student's **Mental Health Score** as a continuous value using information about social media usage, study habits, sleep, physical activity, stress, demographics, and academic background. It is a regression problem built on a dataset of **5,000 students and 13 columns**.
 
-```
-├── index.html          # Main HTML file with form and modals
-├── style.css           # Complete styling with animations
-├── script.js           # Vanilla JavaScript for interactivity
-├── Mental_Health_Model.pkl  # Trained ML model (pickle file)
-└── main.py            # FastAPI backend (provided)
-```
+The goal is to turn the trained ML model into a usable web application: users provide student information through a simple form, the FastAPI backend validates the input with Pydantic, and the trained model returns a predicted mental health score. The project execution plan follows the flow **Data → Model → FastAPI + Pydantic → UI → Deployment**.
 
-## 🎨 Design Features
-
-### Visual Elements
-- **Animated Background**: Floating particles and moving dots create depth
-- **Humanoid Face**: Central 3D animated face with glowing eyes
-- **Gradient Waves**: Smooth flowing waves with multiple gradient colors
-- **Floating Orbs**: 3D spheres with parallax animations
-- **Glow Effects**: Subtle pulsing and glowing elements throughout
-
-### Color Palette
-- **Muted Dark Purple**: `#2d1f3c`, `#3a2f4e`
-- **Coral/Pink**: `#ff6b6b`, `#ff8787`
-- **Sage Green**: `#7fb3a0`, `#a8d5ba`
-- **Cream**: `#f5e6d3`, `#fef5e7`
-- **Gradients**: Sunset and soft color transitions
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.8+
-- FastAPI
-- Joblib
-- Pandas
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-
-### Backend Setup
-
-1. **Prepare the Flask/FastAPI directory:**
-```bash
-# Copy the Mental_Health_Model.pkl to your backend directory
-cp Mental_Health_Model.pkl /path/to/backend/
-```
-
-2. **Create main.py** with the provided code and place Mental_Health_Model.pkl in the same directory
-
-3. **Install dependencies:**
-```bash
-pip install fastapi uvicorn joblib pandas scikit-learn python-multipart
-```
-
-4. **Run the backend:**
-```bash
-cd /path/to/backend
-uvicorn main:app --reload
-```
-
-The API will be available at: `http://127.0.0.1:8000`
-
-### Frontend Setup
-
-1. **Place files in web directory:**
-```
-web-directory/
-├── index.html
-├── style.css
-└── script.js
-```
-
-2. **Start a local server** (choose one):
-
-**Python (3.x):**
-```bash
-python -m http.server 8080
-```
-
-**Node.js (npm):**
-```bash
-npx http-server -p 8080
-```
-
-**Live Server (VS Code Extension):**
-- Install "Live Server" extension
-- Right-click on index.html → "Open with Live Server"
-
-3. **Open in browser:**
-```
-http://localhost:8080
-```
-
-## 📝 Form Fields
-
-The application collects data for all 12 PersonData fields:
-
-| Field | Type | Range | Options |
-|-------|------|-------|---------|
-| **Age** | Integer | 10-100 | - |
-| **Gender** | Select | - | Male, Female |
-| **Country** | Select | - | India, USA, Canada, Australia, UK, Germany, Mexico, Turkey, France, Other |
-| **Academic Level** | Select | - | High School, Undergraduate, Graduate |
-| **Most Used Platform** | Select | - | Facebook, Instagram, Twitter, LinkedIn, TikTok, Snapchat, YouTube, LINE, KakaoTalk, VKontakte, WhatsApp, WeChat |
-| **Purpose of Use** | Select | - | Networking, Education, Entertainment, News |
-| **Daily Usage (hours)** | Float | 0-24 | - |
-| **Daily Unlocks** | Integer | 0+ | - |
-| **Study Hours** | Float | 0-24 | - |
-| **Physical Activity Hours** | Float | 0-24 | - |
-| **Sleep Hours** | Float | 0-24 | - |
-| **Stress Level** | Select | - | Low, Medium, High, Very High |
-
-## 🎯 Features
-
-### User Experience
-- ✅ **Form Validation**: Real-time error checking
-- ✅ **Loading Animation**: Elegant spinner while processing
-- ✅ **Result Display**: Beautiful card with score visualization
-- ✅ **Wellness Tips**: Personalized recommendations based on input
-- ✅ **Error Handling**: Graceful error messages
-- ✅ **Mobile Responsive**: Works on all device sizes
-
-### Technical Features
-- ✅ **Vanilla JavaScript**: No frameworks or dependencies
-- ✅ **Fetch API**: Modern CORS-enabled communication
-- ✅ **CSS Animations**: Smooth 60fps animations
-- ✅ **Canvas Animations**: Dynamic particle effects
-- ✅ **SVG Graphics**: Scalable vector elements
-- ✅ **Responsive Grid Layout**: Adaptive design
-
-## 🔄 API Integration
-
-### Request Format
-```javascript
-POST http://127.0.0.1:8000/predict
-
-{
-    "age": 25,
-    "gender": "Male",
-    "country": "India",
-    "academic_level": "Undergraduate",
-    "most_used_platform": "Instagram",
-    "purpose_of_use": "Entertainment",
-    "avg_daily_usage_hours": 5.5,
-    "daily_unlocks": 150,
-    "study_hours": 4.0,
-    "physical_activity_hours": 1.5,
-    "sleep_hours_per_night": 7.0,
-    "stress_level": "Medium"
-}
-```
-
-### Response Format
-```json
-{
-    "predicted_mental_health_score": 72.45
-}
-```
-
-## 🎨 Customization
-
-### Modify Colors
-Edit `:root` variables in `style.css`:
-```css
-:root {
-    --primary-dark: #2d1f3c;
-    --accent-coral: #ff6b6b;
-    --accent-sage: #7fb3a0;
-    /* ... more variables */
-}
-```
-
-### Adjust Animations
-- **Speed**: Modify `--transition-fast` and `--transition-smooth`
-- **Durations**: Edit `animation` properties in keyframes
-- **Effects**: Change `filter`, `transform`, and `opacity` properties
-
-### Add More Tips
-Update `WELLNESS_TIPS` in `script.js`:
-```javascript
-const WELLNESS_TIPS = {
-    category: [
-        'Tip 1...',
-        'Tip 2...',
-        'Tip 3...'
-    ]
-};
-```
-
-## 🌐 Deployment
-
-### Vercel / Netlify
-1. Push frontend files to GitHub
-2. Connect repository to Vercel/Netlify
-3. Update `API_BASE_URL` in `script.js` to your backend URL
-4. Deploy backend separately (Heroku, Railway, AWS Lambda, etc.)
-
-### Docker Deployment
-Create `docker-compose.yml`:
-```yaml
-version: '3'
-services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    environment:
-      - MODEL_PATH=/app/Mental_Health_Model.pkl
-  
-  frontend:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./frontend:/usr/share/nginx/html
-    depends_on:
-      - backend
-```
-
-## 🔒 Security Notes
-
-- ✅ CORS is enabled on backend
-- ✅ Input validation on both frontend and backend
-- ✅ No sensitive data stored in browser
-- ✅ HTTPS recommended for production
-- ⚠️ Keep API keys secure (not in frontend code)
-
-## 📊 Score Interpretation
-
-| Score Range | Label | Color |
-|-------------|-------|-------|
-| 80-100 | Excellent | Sage Green |
-| 60-79 | Good | Light Sage |
-| 40-59 | Fair | Pink |
-| 0-39 | Needs Attention | Coral |
-
-## 🐛 Troubleshooting
-
-### "CORS Error" or "Failed to fetch"
-- Ensure backend is running: `http://127.0.0.1:8000`
-- Check CORS middleware in FastAPI backend
-- Verify firewall isn't blocking port 8000
-
-### Model not loading
-- Ensure `Mental_Health_Model.pkl` is in backend directory
-- Check scikit-learn version compatibility
-- Run: `pip install --upgrade scikit-learn joblib`
-
-### Animations not smooth
-- Use modern browser (Chrome, Firefox, Safari, Edge)
-- Check GPU acceleration is enabled
-- Close resource-heavy applications
-
-### Form not submitting
-- Check browser console for errors (F12)
-- Verify all required fields are filled
-- Check backend logs for API errors
-
-## 📱 Browser Support
-
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
-- ✅ Mobile browsers (iOS Safari, Chrome Mobile)
-
-## 📄 License
-
-This project is provided as-is for educational and commercial use.
-
-## 🤝 Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review browser console (F12 → Console)
-3. Check backend logs
-4. Verify API endpoint in `script.js`
-
-## 📈 Future Enhancements
-
-- [ ] User authentication and history
-- [ ] Export results as PDF
-- [ ] Dark/Light theme toggle
-- [ ] Multiple language support
-- [ ] Advanced analytics dashboard
-- [ ] Integration with health tracking APIs
-- [ ] Progressive Web App (PWA) support
+> **Note:** This application is a prediction/ML demonstration, not a medical diagnostic or clinical assessment tool.
 
 ---
 
-**Created with ❤️ for mental health awareness and AI-powered well-being insights.**
+## 2. Features
+
+* **Mental health score prediction** - enter student lifestyle, social media, demographic, and stress information to receive a predicted score.
+* **Structured input validation** - invalid values are rejected before reaching the ML model through Pydantic validation.
+* **Regression-based prediction** - predicts a continuous Mental Health Score rather than assigning a mental-health category.
+* **Preprocessed raw inputs** - the saved ML pipeline handles transformations, scaling, and categorical encoding automatically.
+* **API access** - predictions are exposed through a documented FastAPI `/predict` endpoint.
+* **Health check endpoint** - `/health` provides a simple way to verify that the service is running.
+* **Interactive web interface** - a lightweight HTML/CSS/JavaScript frontend allows users to interact with the model without needing to call the API manually.
+
+---
+
+## 3. Tech Stack
+
+### Machine Learning
+
+* **Python**
+* **Pandas** - data loading and manipulation
+* **NumPy** - numerical operations
+* **Matplotlib / Seaborn** - exploratory data analysis and visualization
+* **Scikit-learn** - preprocessing, regression models, evaluation, and hyperparameter tuning
+* **Joblib** - saving the trained ML pipeline
+
+The notebook uses Linear Regression as a baseline and Random Forest Regression as the stronger tree-based model.
+
+### Backend
+
+* **FastAPI** - HTTP API and application layer
+* **Pydantic** - request and response validation
+
+### Frontend
+
+* **HTML**
+* **CSS**
+* **Vanilla JavaScript**
+* Browser `fetch()` API
+
+No frontend framework is required.
+
+### Deployment
+
+* **GitHub** - source repository
+* **Render** - web-service deployment
+
+---
+
+## 4. Architecture
+
+The application is built as a simple end-to-end inference pipeline:
+
+```text
+                    USER
+                      │
+                      ▼
+              HTML / CSS / JS
+                      │
+                JSON request
+                      │
+                      ▼
+              ┌───────────────┐
+              │    FastAPI    │
+              │   /predict    │
+              └───────┬───────┘
+                      │
+                      ▼
+              ┌───────────────┐
+              │    Pydantic   │
+              │   Validation  │
+              └───────┬───────┘
+                      │
+                Valid input
+                      │
+                      ▼
+        ┌──────────────────────────┐
+        │ Saved Scikit-learn       │
+        │ Pipeline                 │
+        │                          │
+        │ Preprocessing → Model    │
+        └────────────┬─────────────┘
+                     │
+                     ▼
+             Mental Health Score
+                     │
+                     ▼
+              JSON API Response
+                     │
+                     ▼
+                 Frontend
+```
+
+The key architectural decision is that the **preprocessing and trained model are stored together**. This allows the backend to pass raw validated input directly to the saved pipeline instead of manually reproducing the transformations used during training.
+
+The frontend and API are also served from the same FastAPI application, giving the application a same-origin setup and avoiding the need for CORS configuration.
+
+---
+
+## 5. Project Structure
+
+A clean repository layout for the application is:
+
+```text
+.
+├── ML_Prediction_Notebook.ipynb
+├── Mental_Health_Model.pkl
+├── app/
+│   ├── main.py
+│   └── schemas.py
+├── static/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── requirements.txt
+└── README.md
+```
+
+### Main components
+
+**`ML_Prediction_Notebook.ipynb`**
+
+Contains the complete ML workflow:
+
+* data inspection
+* EDA
+* dara cleaning
+* feature engineering
+* preprocessing
+* model comparison
+* hyperparameter tuning
+* evaluation
+* model persistence
+
+The uploaded notebook is the source of the project's training workflow.
+
+**`Mental_Health_Model.pkl`**
+
+Contains the persisted Random Forest pipeline used for inference. The notebook saves the complete pipeline with Joblib rather than saving only the estimator.
+
+**`app/`**
+
+Contains the FastAPI application and Pydantic schemas.
+
+**`static/`**
+
+Contains the lightweight browser UI.
+
+**`requirements.txt`**
+
+Defines the Python dependencies required to run the application.
+
+---
+
+## 6. Demo Video
+
+**Demo video:** *Add your video link here.*
+
+The recommended demo flow is:
+
+1. Open the deployed application.
+2. Enter a valid student's information.
+3. Submit the form.
+4. Show the predicted Mental Health Score.
+5. Submit an invalid value, such as a negative age.
+6. Show the resulting FastAPI/Pydantic validation error.
+7. Briefly show the API documentation and `/health` endpoint.
+
+The project plan specifically identifies the invalid-input/422 response as an important demonstration of Pydantic's role in protecting the model from bad requests.
+
+---
+
+## 7. Engineering Decisions
+
+### ML pipeline instead of a standalone model
+
+The project uses a scikit-learn `Pipeline` and `ColumnTransformer` so preprocessing and prediction remain part of the same inference object.
+
+The model receives raw features and the pipeline applies the required transformations before prediction. This avoids duplicating preprocessing logic inside FastAPI.
+
+### Different encoding strategies for different categorical variables
+
+`Stress_Level` is treated as an ordered variable:
+
+```text
+Low < Medium < High < Very High
+```
+
+while variables such as gender, academic level, platform, purpose of use, and grouped country are treated as nominal categories.
+
+This avoids introducing an artificial ordering where one does not exist.
+
+### High-cardinality country feature
+
+The dataset contains many countries. Instead of one-hot encoding every country independently, the project keeps the **top 10 countries** and groups the remaining countries into `"Other"`.
+
+This preserves some geographic signal while avoiding a large sparse feature space.
+
+### Log transformation for Study Hours
+
+`Study_Hours` was identified as the skewed numerical feature and receives a `log1p` transformation before scaling.
+
+The other numerical features are scaled without the same logarithmic transformation.
+
+### Model comparison
+
+The project compares:
+
+* Linear Regression
+* Random Forest Regression
+* Tuned Random Forest Regression
+
+The purpose is not simply to use a more complex model, but to establish a baseline and then determine whether a nonlinear model provides better predictive performance.
+
+### Model evaluation
+
+The models are compared using:
+
+* **R²** — variance explained by the model;
+* **MAE** — average absolute prediction error in score units;
+* **RMSE** — error metric that penalizes larger mistakes more heavily.
+
+The recorded test results were:
+
+| Model               |    Test R² |        MAE |       RMSE |
+| ------------------- | ---------: | ---------: | ---------: |
+| Linear Regression   |     0.7398 |     0.5362 |     0.6760 |
+| Random Forest       | **0.8780** | **0.3465** | **0.4629** |
+| Tuned Random Forest |     0.8652 |     0.3687 |     0.4865 |
+
+The results show that the default Random Forest performed best on the held-out test set among the three evaluated models.
+
+An important implementation detail is that the notebook ultimately saves **`rf_pipeline`**, the default Random Forest pipeline, as `Mental_Health_Model.pkl`, rather than the separately created `rf_best_pipeline` from the randomized search.
+
+### Pydantic at the API boundary
+
+Pydantic is used as the contract between external HTTP input and the ML pipeline.
+
+The API validates:
+
+```text
+Request
+   ↓
+Pydantic
+   ↓
+Valid data
+   ↓
+ML pipeline
+```
+
+rather than allowing arbitrary request dictionaries to reach the model. The execution plan specifies typed request fields, validation constraints, a response schema, and integration with `/predict`.
+
+### FastAPI as a thin service layer
+
+FastAPI is intentionally kept separate from ML logic.
+
+Its responsibilities are primarily:
+
+* receiving HTTP requests;
+* validating them;
+* loading/reusing the saved model;
+* calling prediction;
+* returning the response;
+* exposing `/health`.
+
+The model itself remains responsible for preprocessing and prediction.
+
+---
+
+## 9. Limitations and Future Improvements
+
+### Limitations
+
+**Not a clinical assessment**
+
+The model predicts a numerical score from patterns in the dataset. It should not be interpreted as a medical diagnosis, psychological assessment, or substitute for professional support.
+
+**Dataset limitations**
+
+The model is trained on a Kaggle dataset containing 5,000 student records. Its performance therefore reflects the characteristics of that dataset and may not generalize to different populations, age groups, countries, or real-world clinical settings.
+
+**Correlation is not causation**
+
+The model learns statistical relationships between the available features and the target. A relationship between social-media usage, stress, sleep, or another feature and the predicted score should not be interpreted as proof that one variable causes changes in mental health.
+
+**Limited interpretability**
+
+Although feature importance can provide useful insight into what the Random Forest learned, the model does not provide a causal explanation for an individual's predicted score.
+
+**Model-selection workflow can be improved**
+
+The notebook evaluates the tuned Random Forest on the same held-out test set used to compare the other models. A stronger production workflow would keep the final test set untouched until the very end and use cross-validation or a separate validation set for model selection.
+
+**Persisted model should be explicitly tied to the selected experiment**
+
+The notebook performs hyperparameter tuning and creates `rf_best_pipeline`, but the artifact that is actually saved is `rf_pipeline`, the default Random Forest. The default model happened to have the stronger recorded test metrics, but the selection should be made explicitly and documented as part of the final training workflow.
+
+### Future Improvements
+
+* Add a dedicated validation set or nested cross-validation for more rigorous model selection.
+* Re-run tuning with a larger and more carefully defined hyperparameter search space.
+* Compare additional regression models such as Gradient Boosting or HistGradientBoosting.
+* Add stronger model interpretability, such as permutation importance or SHAP-based analysis.
+* Add automated unit and API tests to the repository.
+* Add stricter Pydantic constraints based on the real domain ranges of every feature.
+* Add model/version metadata so the API can report exactly which model artifact is running.
+* Monitor prediction behavior and data drift after deployment.
+* Evaluate the model on data from different student populations to test generalization.
+* Improve the frontend with clearer explanations of what the prediction means and, importantly, what it does **not** mean.
+* Add a more production-oriented deployment setup if the application moves beyond demonstration use.
